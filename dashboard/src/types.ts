@@ -1,28 +1,36 @@
-export interface Game { gameId: number; week: number; date: string; home: string; visitor: string }
-export interface PlaySummary {
-  playId: number; quarter: number; clock: string; down: number | null; yardsToGo: number | null
-  possession: string; passResult: string | null; description: string
+export interface GameInfo { gameId: number; week: number; date: string; home: string; visitor: string }
+export interface PlayItem { playId: number; label: string }
+export interface Header {
+  home: string; visitor: string; homeScore: number; visitorScore: number
+  quarter: number; downLabel: string; yardsToGo: number; clock: string | null
+  offense: string; defense: string; formation: string | null
 }
-export interface Player {
-  id: number; name: string; team: string; side: 'off' | 'def'
-  role: string | null; pos: string | null; jersey: number | null
-}
-export interface Edge { to: number; sep: number; nd: number; c: 'g' | 'y' | 'r' }
-export interface Duel { a: number; b: number; d: number; red: boolean; key: boolean; kind: 'block' | 'sack' | 'contact' }
+export interface Player { id: number; name: string; pos: string; jersey: number | null; side: 'off' | 'def'; role: string | null }
 export interface Frame {
-  f: number; ev: string[]; ball: [number, number] | null; p: ([number, number] | null)[]
-  edges: Edge[]; duels: Duel[]; key: boolean; phase: 'pre' | 'qb' | 'post'; say: string
+  f: number
+  ball: [number, number] | null
+  p: ([number, number] | null)[]
+  s: (number | null)[]
+  sep: Record<string, number>
+  open: number[]
+  pressure: number | null
+  events: string[]
 }
-export interface Context {
-  quarter: number; clock: string; down: number | null; yardsToGo: number | null
-  formation: string | null; coverage: string | null; coverageType: string | null; coverageExplain: string
-  passResult: string | null; passResultText: string; playResult: number | null
-  description: string; downExplain: string; summary: string
-}
-export interface Play {
-  gameId: number; playId: number; flipped: boolean; offense: string; defense: string
-  snapFrame: number; releaseFrame: number | null; qbEndFrame: number
-  players: Player[]; qbIndex: number | null; frames: Frame[]
-  thresholds: { open: number; tight: number; duel: number }
-  context: Context
+export interface PlayData {
+  playId: number
+  header: Header
+  snapFrame: number
+  releaseFrame: number | null
+  lastFrame: number
+  fps: number
+  thresholds: { open: number; pressureFull: number; pressureZero: number }
+  players: Player[]
+  frames: Frame[]
+  gauge: { value: number; when: string }
+  coverage: { name: string | null; type: string | null; text: string }
+  alerts: string[]
+  keyPoints: string[]
+  narration: string
+  replay: string[]
+  description: string | null
 }
